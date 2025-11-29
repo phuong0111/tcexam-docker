@@ -3,7 +3,7 @@ FROM php:8.2-apache
 # Install System Dependencies
 RUN apt-get update && apt-get install -y \
     libpng-dev libjpeg-dev libfreetype6-dev libzip-dev libxml2-dev \
-    libmagickwand-dev ghostscript zbar-tools texlive-full unzip mariadb-client \
+    libmagickwand-dev ghostscript zbar-tools texlive-base unzip mariadb-client \
     && rm -rf /var/lib/apt/lists/*
 
 # Install PHP Extensions

@@ -1,0 +1,40 @@
+version: '3.8'
+
+services:
+  app:
+    build:
+      context: ..              # Sets context to /tcexam-docker/
+      dockerfile: linux/Dockerfile
+    container_name: tcexam_app_linux
+    ports:
+      - "8082:80"
+    environment:
+      - DB_HOST=db
+      - DB_NAME=TCExam
+      - DB_USER=root
+      - DB_PASSWORD=rootpassword
+    depends_on:
+      db:
+        condition: service_healthy
+
+  db:
+    image: mysql:8.0           # Standard MySQL image
+    container_name: tcexam_db_linux
+    command: --default-authentication-plugin=mysql_native_password
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: TCExam
+    volumes:
+      - db_data:/var/lib/mysql
+      # Mount SQL files from the sibling directory
+      - ../source_code/tcexam/install/mysql_db_structure.sql:/docker-entrypoint-initdb.d/01_structure.sql
+      - ../source_code/tcexam/install/db_data.sql:/docker-entrypoint-initdb.d/02_data.sql
+    healthcheck:
+      test: ["CMD", "mysqladmin" ,"ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  db_data:

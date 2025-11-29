@@ -1,0 +1,44 @@
+version: '3.8'
+
+services:
+  app:
+    # Explicitly define platform to ensure correct PHP build on M1/M2
+    platform: linux/arm64
+    build:
+      context: ..              # Sets context to /tcexam-docker/
+      dockerfile: macos/Dockerfile
+    container_name: tcexam_app_mac
+    ports:
+      - "8082:80"
+    environment:
+      - DB_HOST=db
+      - DB_NAME=TCExam
+      - DB_USER=root
+      - DB_PASSWORD=rootpassword
+    depends_on:
+      db:
+        condition: service_healthy
+
+  db:
+    # Use the debian tag for native ARM64 support
+    image: mysql:8.0-debian
+    container_name: tcexam_db_mac
+    platform: linux/arm64
+    command: --default-authentication-plugin=mysql_native_password
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: TCExam
+    volumes:
+      - db_data_mac:/var/lib/mysql
+      # Mount SQL files from the sibling directory
+      - ../source_code/tcexam/install/mysql_db_structure.sql:/docker-entrypoint-initdb.d/01_structure.sql
+      - ../source_code/tcexam/install/db_data.sql:/docker-entrypoint-initdb.d/02_data.sql
+    healthcheck:
+      test: ["CMD", "mysqladmin" ,"ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  db_data_mac:

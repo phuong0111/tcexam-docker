@@ -7,6 +7,7 @@ Follow these steps to set up the TCExam Docker environment:
 1. **Clone the repository:**
 ```bash
 git clone https://github.com/phuong0111/tcexam-docker.git
+```
 
 2. **Navigate to the project and create the source directory:**
 ```bash

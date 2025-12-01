@@ -4,9 +4,7 @@ services:
   app:
     # Explicitly define platform to ensure correct PHP build on M1/M2
     platform: linux/arm64
-    build:
-      context: ..              # Sets context to /tcexam-docker/
-      dockerfile: macos/Dockerfile
+    image: xuanphuong/msaexam-macos-app:v1
     container_name: tcexam_app_mac
     ports:
       - "8082:80"
@@ -21,7 +19,7 @@ services:
 
   db:
     # Use the debian tag for native ARM64 support
-    image: mysql:8.0-debian
+    image: mysql:8.0
     container_name: tcexam_db_mac
     platform: linux/arm64
     command: --default-authentication-plugin=mysql_native_password

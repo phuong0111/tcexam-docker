@@ -2,9 +2,7 @@ version: '3.8'
 
 services:
   app:
-    build:
-      context: ..              # Sets context to /tcexam-docker/
-      dockerfile: linux/Dockerfile
+    image: xuanphuong/msaexam-linux-app:v1
     container_name: tcexam_app_linux
     ports:
       - "8082:80"
